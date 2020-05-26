@@ -1,0 +1,20 @@
+---
+address:
+        - "192.168.0.111"
+        - "192.168.0.134"
+        - "192.168.0.132"
+port:
+        - "443"
+        - "6574"
+        - "8810"
+recipient:
+        recipients1:
+        - placeholder@placeholder.com
+        recipients2:
+        - placeholder@placeholder.com
+        - placeholder@placeholder.com
+        recipients3:
+        - placeholder@placeholder.com
+        - placeholder@placeholder.com      
+
+...
