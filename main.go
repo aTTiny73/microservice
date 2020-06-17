@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os/exec"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/irnes/go-mailer"
@@ -18,7 +19,7 @@ type config struct {
 }
 
 // Pinger pings the host and sends email if host is not avaliable
-func pinger(configuration *config) {
+func pinger(wg *sync.WaitGroup, configuration *config) {
 	for {
 		for i := 0; i < len(configuration.Address); i++ {
 
@@ -60,9 +61,13 @@ func pinger(configuration *config) {
 		}
 		time.Sleep(2 * time.Second)
 	}
+	wg.Done()
 }
 
 func main() {
+
+	var wg sync.WaitGroup
+	wg.Add(1)
 
 	// Set the file name of the configurations file
 	viper.SetConfigName("config")
@@ -83,8 +88,9 @@ func main() {
 	if err != nil {
 		fmt.Println("unable to set struct host", err)
 	}
-	pinger(&b)
+	go pinger(&wg, &b)
 	fmt.Println(b.Address)
 	fmt.Println(b.Port)
 	fmt.Println(b.Recipient)
+	wg.Wait()
 }
