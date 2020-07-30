@@ -25,7 +25,7 @@ func pinger(wg *sync.WaitGroup, configuration *config) {
 
 			//Ping syscall, -c ping count, -i interval, -w timeout
 			out, _ := exec.Command("ping", configuration.Address[i], "-c 5", "-i 3", "-w 10").Output()
-			if strings.Contains(string(out), "Destination Host Unreachable") {
+			if (strings.Contains(string(out), "Destination Host Unreachable")) || (strings.Contains(string(out), "100% packet loss")) {
 				fmt.Println("Server down")
 				var (
 					host     = "xxx"
@@ -33,6 +33,7 @@ func pinger(wg *sync.WaitGroup, configuration *config) {
 					pass     = "xxx"
 					recipent = "xxx"
 				)
+				//recipent := configuration.Recipient["Recipinet"+strconv.Itoa(i+1)]
 
 				config := mailer.Config{
 					Host: host,
@@ -47,7 +48,6 @@ func pinger(wg *sync.WaitGroup, configuration *config) {
 				mail.FromName = "Go Mailer"
 				mail.From = user
 				mail.SetTo(recipent)
-
 				mail.Subject = "Server "
 				mail.Body = "Your server is down"
 
@@ -61,7 +61,7 @@ func pinger(wg *sync.WaitGroup, configuration *config) {
 		}
 		time.Sleep(2 * time.Second)
 	}
-	wg.Done()
+	wg.Done() // need to fix
 }
 
 func main() {
